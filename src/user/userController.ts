@@ -40,5 +40,45 @@ export const createUser = async (
   });
 
   // Response
-  res.json({ message: "User Created", id: newUser._id, accessToken: token });
+  res
+    .status(201)
+    .json({ message: "User Created", userId: newUser._id, accessToken: token });
+};
+
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+
+  // validation
+  if (!email || !password) {
+    const error = createHttpError(400, "All fields are required");
+    return next(error);
+  }
+
+  // DB call
+  const user = await userModel.findOne({ email });
+  if (!user) {
+    const error = createHttpError(400, "User not found");
+    return next(error);
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatch) {
+    return next(createHttpError(400, "Incorrect password"));
+  }
+
+  // Token generation
+  const token = sign({ sub: user._id }, config.jwtSecret as string, {
+    expiresIn: "7d",
+  });
+
+  // Response
+  res.json({
+    message: "Successfully login",
+    userId: user._id,
+    accessToken: token,
+  });
 };
