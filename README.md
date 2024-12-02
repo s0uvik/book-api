@@ -10,28 +10,22 @@ A RESTful API for managing books with user authentication, built with Node.js, E
 - JWT-based authentication
 - Cloudinary integration for file storage
 
-## Prerequisites
-
-- Node.js
-- MongoDB
-- Cloudinary account
-
 ## Environment Variables
 
 Create a `.env` file in the root directory with the following variables:
 
 ```env
 PORT=8000
-DATABASE_URL=mongodb+srv://<username>:<password>@cluster0.ynatc.mongodb.net
-NODE_ENV=development
-JWT_SECRET=your_jwt_secret
+DATABASE_URL=
+NODE_ENV=
+JWT_SECRET=
 
-CLOUDINARY_CLOUD=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-CLOUDINARY_URL=your_cloudinary_url
+CLOUDINARY_CLOUD=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+CLOUDINARY_URL=
 
-FRONTEND_DOMAIN=http://localhost:3000/
+FRONTEND_DOMAIN=
 ```
 
 ## API Documentation
@@ -39,6 +33,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
 ### Authentication Endpoints
 
 #### Register User
+
 - **URL**: `/api/users/register`
 - **Method**: `POST`
 - **Body**:
@@ -59,6 +54,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
   ```
 
 #### Login User
+
 - **URL**: `/api/users/login`
 - **Method**: `POST`
 - **Body**:
@@ -80,6 +76,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
 ### Book Endpoints
 
 #### Create Book
+
 - **URL**: `/api/books`
 - **Method**: `POST`
 - **Authentication**: Required (Bearer Token)
@@ -100,6 +97,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
   ```
 
 #### Get All Books
+
 - **URL**: `/api/books`
 - **Method**: `GET`
 - **Authentication**: Not Required
@@ -117,6 +115,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
   ```
 
 #### Get Single Book
+
 - **URL**: `/api/books/:bookId`
 - **Method**: `GET`
 - **Authentication**: Not Required
@@ -132,6 +131,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
   ```
 
 #### Update Book
+
 - **URL**: `/api/books/:bookId`
 - **Method**: `PATCH`
 - **Authentication**: Required (Bearer Token)
@@ -158,6 +158,7 @@ FRONTEND_DOMAIN=http://localhost:3000/
   ```
 
 #### Delete Book
+
 - **URL**: `/api/books/:bookId`
 - **Method**: `DELETE`
 - **Authentication**: Required (Bearer Token)
