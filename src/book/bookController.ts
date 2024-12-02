@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import cloudinary from "../config/cloudinary";
-import path from "node:path";
 import createHttpError from "http-errors";
+import path from "node:path";
+import fs from "node:fs";
+import bookModel from "./bookModel";
 
 export const createBook = async (
   req: Request,
@@ -38,18 +40,20 @@ export const createBook = async (
       }
     );
 
-    const newBook = {
+    const newBook = await bookModel.create({
       title,
       genre,
       author: "674c0f101dbce65682521e6c",
       coverImage: uploadResult.secure_url,
       file: bookFileUploadResult.secure_url,
-    };
+    });
 
     // delete temp files
+    await fs.promises.unlink(filepath);
+    await fs.promises.unlink(bookFilePath);
+
+    res.status(201).json({ message: "Book Created", bookId: newBook._id });
   } catch (error) {
     return next(createHttpError(500, "Error, uploading files"));
   }
-
-  res.json({ message: "book router" });
 };
