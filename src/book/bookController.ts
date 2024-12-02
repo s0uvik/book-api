@@ -130,3 +130,17 @@ export const updateBook = async (
 
   res.json({ status: "200", data: updatedBook });
 };
+
+export const getBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // add pagination
+    const book = await bookModel.find();
+    res.json(book);
+  } catch (error) {
+    return next(createHttpError(500, "Error while getting books"));
+  }
+};
