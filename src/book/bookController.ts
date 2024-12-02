@@ -109,7 +109,7 @@ export const updateBook = async (
     const uploadResult = await cloudinary.uploader.upload(filepath, {
       resource_type: "raw",
       filename_override: completeFileName,
-      folder: "book-cover",
+      folder: "book-pdf",
       format: "pdf",
     });
 
@@ -144,6 +144,7 @@ export const getBook = async (
     return next(createHttpError(500, "Error while getting books"));
   }
 };
+
 export const getSingleBook = async (
   req: Request,
   res: Response,
@@ -157,6 +158,43 @@ export const getSingleBook = async (
       return next(createHttpError(404, "Book not found"));
     }
     res.json(book);
+  } catch (error) {
+    return next(createHttpError(500, "Error while getting a book"));
+  }
+};
+
+export const deleteBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const bookId = req.params.bookId;
+  try {
+    // add pagination
+    const book = await bookModel.findOne({ _id: bookId });
+    if (!book) {
+      return next(createHttpError(404, "Book not found"));
+    }
+
+    const _req = req as AuthRequest;
+    if (book.author.toString() !== _req.userId) {
+      return next(createHttpError(403, "Unauthorized"));
+    }
+
+    const coverImageSplit = book.coverImage.split("/");
+    const coverImageID =
+      coverImageSplit.at(-2) + "/" + coverImageSplit.at(-1)?.split(".").at(-2);
+    await cloudinary.uploader.destroy(coverImageID);
+
+    const bookFileSplit = book.file.split("/");
+    const bookFileID = bookFileSplit.at(-2) + "/" + bookFileSplit.at(-1);
+    await cloudinary.uploader.destroy(bookFileID, {
+      resource_type: "raw",
+    });
+
+    await bookModel.deleteOne({ _id: bookId });
+
+    res.status(204).json({ message: "Successfully deleted" });
   } catch (error) {
     return next(createHttpError(500, "Error while getting a book"));
   }
